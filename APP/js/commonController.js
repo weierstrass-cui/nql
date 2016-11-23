@@ -11,14 +11,7 @@ var mainCtrl = '';
 			$scope.isAlert = false;
 			$scope.isConfirm = false;
 			$scope.$on('onError', function(d, M){
-				$scope.commonFn.alertMsg(M.title, M.message, function(){
-					if(M.redirt){
-						$storage.removeLocalStorage('SQZ_autoLogin');
-						$storage.removeLocalStorage('SQZ_userInfo');
-						$storage.removeLocalStorage('SQZ_userId');
-						$scope.commonFn.goView(M.redirt);
-					}
-				});
+				$scope.commonFn.alertMsg(M.title, M.message);
 			});
 
 			var currentLocation = {};

@@ -4,12 +4,23 @@
 		console.log('mainCtrl 加载出错');
 		return;
 	}
-    // 登录
-	mainCtrl.controller('homeController', ['$scope', '$homeService', 
-		function($scope, $homeService){
-			$homeService.getTableList({}, function(res){
-				console.log(res);
+	mainCtrl.controller('queryTableController', ['$scope', '$mainService', 
+		function($scope, $mainService){
+			$mainService.queryTable({}, function(res){
+				$scope.tableList = res;
+			});
+		}
+	]);
+	mainCtrl.controller('queryDataController', ['$scope', '$mainService', 
+		function($scope, $mainService){
+			var param = $scope.commonFn.getParamsFromUrl();
+			$mainService.queryData({
+				tableName: param.tableName
+			}, function(res){
+				$scope.fieldsList = res.fields;
+				$scope.dataList = res.data;
 			});
 		}
 	]);
 })();
+

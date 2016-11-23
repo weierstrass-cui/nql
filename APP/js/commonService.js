@@ -64,7 +64,7 @@
 					return false;
 				}
 				
-				$http.post(postUrl, {}, {
+				$http.post(postUrl, json, {
 				    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
 				    transformRequest: transform
 				})

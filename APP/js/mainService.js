@@ -3,10 +3,13 @@
 		console.log('mainCtrl 加载出错');
 		return;
 	}
-	mainCtrl.factory('$homeService', ['$request', function(request){
+	mainCtrl.factory('$mainService', ['$request', function(request){
 		return {
-			getTableList: function(json, callback){
+			queryTable: function(json, callback){
 				request.post('/getTableList', json, callback);
+			},
+			queryData: function(json, callback){
+				request.post('/getDataList', json, callback);
 			}
 		}
 	}]);

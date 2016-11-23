@@ -1,0 +1,19 @@
+<!-- <ul>
+	<li ng-repeat="item in fieldsList">
+		<a ng-href="javascript://">{{item.Field}}</a>
+	</li>
+</ul>
+<ul ng-repeat="dataLine in dataList">
+	<li ng-repeat="item in dataLine">
+		<a ng-href="javascript://">{{item}}</a>
+	</li>
+</ul> -->
+
+<table cellpadding="0" cellspacing="0" border="1">
+	<tr>
+		<td ng-repeat="item in fieldsList">{{item.Field}}</td>
+	</tr>
+	<tr ng-repeat="dataLine in dataList">
+		<td ng-repeat="item in dataLine">{{item}}</td>
+	</tr>
+</table>

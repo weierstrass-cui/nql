@@ -1,18 +1,18 @@
 var mysql = require('mysql');
 
 var connection = mysql.createConnection({
-	host: 'localhost',
-	user: 'root',
-	pass: '',
-	database: 'CK'
+	host: 'rm-bp1p1i96n28756oq5o.mysql.rds.aliyuncs.com',
+	user: 'acs',
+	password: 'Aaaaaaa1!',
+	database: 'acs_test'
 });
 
 var SqlClass = function(tableName){
-	if( !tableName || typeof tableName !== 'string' ){
+	/*if( !tableName || typeof tableName !== 'string' ){
 		console.log('[SqlClass ERROR] - NO TABLE');
 		return false;
-	}
-	var WHERE = [];
+	}*/
+	var TBN = tableName, WHERE = [];
 
 	var getWhere = function(){
 		var _there = ' where 1 = 1';
@@ -26,31 +26,39 @@ var SqlClass = function(tableName){
 		return this;
 	}
 	this.update = function(opts){
-		var SET = [];
-		for(var i in opts){
-			SET.push(i + '= "' + opts[i] + '"');
-		}
-		SET = SET.join(', ');
-		var nql = 'update ' + tableName + ' set ' + SET + getWhere();
-		connection.query(nql, function(err, rows, fields){
-			if( err ){
-				console.log(err);
+		if( !TBN || typeof TBN !== 'string' ){
+			console.log('[SqlClass ERROR] - NO TABLE');
+		}else{
+			var SET = [];
+			for(var i in opts){
+				SET.push(i + '= "' + opts[i] + '"');
 			}
-		});
+			SET = SET.join(', ');
+			var nql = 'update ' + TBN + ' set ' + SET + getWhere();
+			connection.query(nql, function(err, rows, fields){
+				if( err ){
+					console.log(err);
+				}
+			});
+		}
 		return this;
 	}
 	this.find = function(colums, callBack){
-		var colums = colums && colums.length ? colums.join(', ') : '*';
-		var nql = 'select ' + colums + ' from ' + tableName + getWhere();
-		console.log('[query NQL] - ' + nql);
-		connection.query(nql, function(err, rows, fields){
-			if( err ){
-				console.log(err);
-			}
-			if( rows && callBack ){
-				callBack(rows);
-			}
-		});
+		if( !TBN || typeof TBN !== 'string' ){
+			console.log('[SqlClass ERROR] - NO TABLE');
+		}else{
+			var colums = colums && colums.length ? colums.join(', ') : '*';
+			var nql = 'select ' + colums + ' from ' + TBN + getWhere();
+			console.log('[query NQL] - ' + nql);
+			connection.query(nql, function(err, rows, fields){
+				if( err ){
+					console.log(err);
+				}
+				if( rows && callBack ){
+					callBack(rows);
+				}
+			});
+		}
 		return this;
 	}
 	this.where = function(opts){
@@ -60,7 +68,7 @@ var SqlClass = function(tableName){
 		}
 		return this;
 	}
-	this.showTableList = function(callBack){
+	this.queryTable = function(callBack){
 		connection.query('show tables', function(err, rows, fields){
 			if( err ){
 				console.log(err);
@@ -69,6 +77,21 @@ var SqlClass = function(tableName){
 				callBack(rows);
 			}
 		});
+		return this;
+	}
+	this.queryFields = function(callBack){
+		if( !TBN || typeof TBN !== 'string' ){
+			console.log('[SqlClass ERROR] - NO TABLE');
+		}else{
+			connection.query('show fields from ' + TBN, function(err, rows, fields){
+				if( err ){
+					console.log(err);
+				}
+				if( rows && callBack ){
+					callBack(rows);
+				}
+			});
+		}
 		return this;
 	}
 }
