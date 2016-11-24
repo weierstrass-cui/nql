@@ -12,6 +12,7 @@ var mysql = require('mysql'),
 			}
 		]
 	});
+var LogFile = log4js.getLogger('log_file');
 
 var getNowTime = function(){
 	var date = new Date();
@@ -21,7 +22,7 @@ var getNowTime = function(){
 	return date.getFullYear() + '-' + addZero(date.getMonth() + 1) + '-' + addZero(date.getDate()) + ' ' + addZero(date.getHours()) + ':' + addZero(date.getMinutes()) + ':' + addZero(date.getSeconds());
 }
 var printLog = function(type, logBody){
-	log4js[type](logBody);
+	LogFile[type](logBody);
 }
 
 var SqlClass = function(options, tableName){
