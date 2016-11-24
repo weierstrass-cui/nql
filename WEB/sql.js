@@ -3,7 +3,8 @@ var mysql = require('mysql'),
 	log4js.configure({
 		appenders: [
 			{
-				type: 'file', //文件输出
+				category: 'logger',
+				type: 'dateFile', //文件输出
 				alwaysIncludePattern: true,
 				filename: '/var/log/node/log-', 
 				pattern: "yyyyMMdd.log",
@@ -12,7 +13,7 @@ var mysql = require('mysql'),
 			}
 		]
 	});
-var LogFile = log4js.getLogger('log_file');
+var LogFile = log4js.getLogger('logger');
 
 var getNowTime = function(){
 	var date = new Date();
