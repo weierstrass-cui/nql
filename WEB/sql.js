@@ -1,4 +1,17 @@
-var mysql = require('mysql');
+var mysql = require('mysql'),
+	log4js = require('log4js');
+	log4js.configure({
+		appenders: [
+			{
+				type: 'file', //文件输出
+				alwaysIncludePattern: true,
+				filename: '/var/logs/log-', 
+				pattern: "yyyyMMdd.log",
+				backups: 3,
+				category: 'normal' 
+			}
+		]
+	});
 
 var getNowTime = function(){
 	var date = new Date();
@@ -8,12 +21,12 @@ var getNowTime = function(){
 	return date.getFullYear() + '-' + addZero(date.getMonth() + 1) + '-' + addZero(date.getDate()) + ' ' + addZero(date.getHours()) + ':' + addZero(date.getMinutes()) + ':' + addZero(date.getSeconds());
 }
 var printLog = function(type, logBody){
-	console.log(getNowTime() + ' - [SqlClass ' + type + '] - ' + logBody);
+	log4js[type](logBody);
 }
 
 var SqlClass = function(options, tableName){
 	if( !options || typeof options !== 'object' ){
-		printLog('ERROR', 'NO DATABASE INFORMATION');
+		printLog('error', 'NO DATABASE INFORMATION');
 		return false;
 	}
 	this.connection = mysql.createConnection({
@@ -22,7 +35,7 @@ var SqlClass = function(options, tableName){
 		password: options.password,
 		database: options.database
 	});
-	printLog('LOG', 'CONNECTED CONNECTION');
+	printLog('info', 'CONNECTED CONNECTION');
 	var TBN = tableName, WHERE = [];
 
 	var getWhere = function(){
@@ -35,7 +48,7 @@ var SqlClass = function(options, tableName){
 	}
 	this.release = function(){
 		this.connection.end();
-		printLog('LOG', 'RELEASE CONNECTION');
+		printLog('info', 'RELEASE CONNECTION');
 		return this;
 	}
 	this.insert = function(){
@@ -43,7 +56,7 @@ var SqlClass = function(options, tableName){
 	}
 	this.update = function(opts){
 		if( !TBN || typeof TBN !== 'string' ){
-			printLog('ERROR', 'NO TABLE');
+			printLog('error', 'NO TABLE');
 		}else{
 			var SET = [];
 			for(var i in opts){
@@ -51,10 +64,10 @@ var SqlClass = function(options, tableName){
 			}
 			SET = SET.join(', ');
 			var nql = 'update ' + TBN + ' set ' + SET + getWhere();
-			printLog('LOG', nql);
+			printLog('info', nql);
 			this.connection.query(nql, function(err, rows, fields){
 				if( err ){
-					console.log(err);
+					printLog('error', err);
 				}
 			});
 		}
@@ -62,15 +75,15 @@ var SqlClass = function(options, tableName){
 	}
 	this.find = function(colums, callBack){
 		if( !TBN || typeof TBN !== 'string' ){
-			console.log('[SqlClass ERROR] - NO TABLE');
+			printLog('error', 'NO TABLE');
 		}else{
 			var colums = colums && colums.length ? colums.join(', ') : '*';
 			// var nql = 'select ' + colums + ' from ' + TBN + getWhere() + ' limit 20';
 			var nql = 'select ' + colums + ' from ' + TBN + getWhere() + '';
-			printLog('LOG', nql);
+			printLog('info', nql);
 			this.connection.query(nql, function(err, rows, fields){
 				if( err ){
-					console.log(err);
+					printLog('error', err);
 				}
 				if( rows && callBack ){
 					callBack(rows);
@@ -87,10 +100,10 @@ var SqlClass = function(options, tableName){
 		return this;
 	}
 	this.queryTable = function(callBack){
-		printLog('LOG', 'SHOW TABLES');
+		printLog('info', 'SHOW TABLES');
 		this.connection.query('show tables', function(err, rows, fields){
 			if( err ){
-				console.log(err);
+				printLog('error', err);
 			}
 			if( rows && callBack ){
 				callBack(rows);
@@ -100,12 +113,12 @@ var SqlClass = function(options, tableName){
 	}
 	this.queryFields = function(callBack){
 		if( !TBN || typeof TBN !== 'string' ){
-			printLog('ERROR', 'NO TABLE');
+			printLog('error', 'NO TABLE');
 		}else{
-			printLog('LOG', 'SHOW FIELDS FROM' + TBN);
+			printLog('info', 'SHOW FIELDS FROM' + TBN);
 			this.connection.query('show fields from ' + TBN, function(err, rows, fields){
 				if( err ){
-					console.log(err);
+					printLog('error', err);
 				}
 				if( rows && callBack ){
 					callBack(rows);
