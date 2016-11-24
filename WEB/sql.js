@@ -5,7 +5,7 @@ var mysql = require('mysql'),
 			{
 				type: 'file', //文件输出
 				alwaysIncludePattern: true,
-				filename: '/var/logs/log-', 
+				filename: '/var/log/node/log-', 
 				pattern: "yyyyMMdd.log",
 				backups: 3,
 				category: 'normal' 
