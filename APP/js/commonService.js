@@ -57,6 +57,7 @@
 					$rootScope.$broadcast('onError', {title: '系统提示',  message: '接口传递参数格式错误'});
 					return;
 				}
+				var dbConfig = JSON.parse($storage.getLocalStorage('NQL_Config'));
 				var postUrl = localUrl + fnName;
 
 				if(postUrl === ''){
@@ -64,6 +65,10 @@
 					return false;
 				}
 				
+				for(var i in dbConfig){
+					json[i] = dbConfig[i];
+				}
+
 				$http.post(postUrl, json, {
 				    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
 				    transformRequest: transform

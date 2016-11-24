@@ -2,6 +2,10 @@ angular.module('starter', ['starter.controller', 'ngAnimate', 'ngTouch', 'ngSani
 .config(['$routeProvider', 
 	function($routeProvider){
 		$routeProvider
+		.when('/config', {
+			templateUrl: 'template/config.html',
+			controller: 'configController'
+		})
 		.when('/queryTable', {
 			templateUrl: 'template/queryTable.html',
 			controller: 'queryTableController'
@@ -11,6 +15,6 @@ angular.module('starter', ['starter.controller', 'ngAnimate', 'ngTouch', 'ngSani
 			controller: 'queryDataController'
 		});
 		//当找不到链接页面后跳转首页
-		$routeProvider.otherwise('/queryTable');
+		$routeProvider.otherwise('/config');
 	}
 ]);

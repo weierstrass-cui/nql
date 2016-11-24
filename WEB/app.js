@@ -3,6 +3,7 @@ var http = require('http'),
 	querystring = require('querystring');
 var connection = require('./sql.js');
 
+var dbOption = null;
 // ck.where({
 // 	'id': 1
 // }).update({
@@ -25,23 +26,27 @@ var sendResponse = function(httpResponse, body, status, description){
 
 var queryFunctions = {
 	'/getTableList': function(httpResponse){
-		var con = new connection();
+		var con = new connection(dbOption);
 		con.queryTable(function(res){
 			var response = [];
 			for(var i in res){
 				response.push(res[i].Tables_in_acs_test);
 			}
+			con.release();
+			con = null;
 			sendResponse(httpResponse, response, "Y");
 		});
 	},
 	'/getDataList': function(httpResponse){
 		if( this.tableName ){
-			var tb = new connection(this.tableName);
+			var con = new connection(dbOption, this.tableName);
 			var responseData = {};
-			tb.queryFields(function(fieldsRes){
+			con.queryFields(function(fieldsRes){
 				responseData.fields = fieldsRes;
-				tb.find(null, function(res){
+				con.find(null, function(res){
 					responseData.data = res;
+					con.release();
+					con = null;
 					sendResponse(httpResponse, responseData, "Y");
 				});
 			});
@@ -58,6 +63,14 @@ http.createServer(function(req, res){
 	req.on('end', function(){
 		postData = querystring.parse(post);
 		pathName = url.parse(req.url, true).pathname;
+		dbOption = {
+			host: postData.host,
+			user: postData.user,
+			password: postData.password,
+			database: postData.database
+		}
 		queryFunctions[pathName] && queryFunctions[pathName].call(postData, res);
 	});
-}).listen(80);
+}).listen(80, 'nql.52ladybug.com', function(){
+	console.log('nql running');
+});

@@ -1,17 +1,28 @@
 var mysql = require('mysql');
 
-var connection = mysql.createConnection({
-	host: 'rm-bp1p1i96n28756oq5o.mysql.rds.aliyuncs.com',
-	user: 'acs',
-	password: 'Aaaaaaa1!',
-	database: 'acs_test'
-});
+var getNowTime = function(){
+	var date = new Date();
+	var addZero = function(num){
+		return num > 9 ? num : ('0' + num);
+	}
+	return date.getFullYear() + '-' + addZero(date.getMonth() + 1) + '-' + addZero(date.getDate()) + ' ' + addZero(date.getHours()) + ':' + addZero(date.getMinutes()) + ':' + addZero(date.getSeconds());
+}
+var printLog = function(type, logBody){
+	console.log(getNowTime() + ' - [SqlClass ' + type + '] - ' + logBody);
+}
 
-var SqlClass = function(tableName){
-	/*if( !tableName || typeof tableName !== 'string' ){
-		console.log('[SqlClass ERROR] - NO TABLE');
+var SqlClass = function(options, tableName){
+	if( !options || typeof options !== 'object' ){
+		printLog('ERROR', 'NO DATABASE INFORMATION');
 		return false;
-	}*/
+	}
+	this.connection = mysql.createConnection({
+		host: options.host,
+		user: options.user,
+		password: options.password,
+		database: options.database
+	});
+	printLog('LOG', 'CONNECTED CONNECTION');
 	var TBN = tableName, WHERE = [];
 
 	var getWhere = function(){
@@ -22,12 +33,17 @@ var SqlClass = function(tableName){
 		}
 		return _there;
 	}
+	this.release = function(){
+		this.connection.end();
+		printLog('LOG', 'RELEASE CONNECTION');
+		return this;
+	}
 	this.insert = function(){
 		return this;
 	}
 	this.update = function(opts){
 		if( !TBN || typeof TBN !== 'string' ){
-			console.log('[SqlClass ERROR] - NO TABLE');
+			printLog('ERROR', 'NO TABLE');
 		}else{
 			var SET = [];
 			for(var i in opts){
@@ -35,7 +51,8 @@ var SqlClass = function(tableName){
 			}
 			SET = SET.join(', ');
 			var nql = 'update ' + TBN + ' set ' + SET + getWhere();
-			connection.query(nql, function(err, rows, fields){
+			printLog('LOG', nql);
+			this.connection.query(nql, function(err, rows, fields){
 				if( err ){
 					console.log(err);
 				}
@@ -48,9 +65,9 @@ var SqlClass = function(tableName){
 			console.log('[SqlClass ERROR] - NO TABLE');
 		}else{
 			var colums = colums && colums.length ? colums.join(', ') : '*';
-			var nql = 'select ' + colums + ' from ' + TBN + getWhere();
-			console.log('[query NQL] - ' + nql);
-			connection.query(nql, function(err, rows, fields){
+			var nql = 'select ' + colums + ' from ' + TBN + getWhere() + ' limit 10';
+			printLog('LOG', nql);
+			this.connection.query(nql, function(err, rows, fields){
 				if( err ){
 					console.log(err);
 				}
@@ -69,7 +86,8 @@ var SqlClass = function(tableName){
 		return this;
 	}
 	this.queryTable = function(callBack){
-		connection.query('show tables', function(err, rows, fields){
+		printLog('LOG', 'SHOW TABLES');
+		this.connection.query('show tables', function(err, rows, fields){
 			if( err ){
 				console.log(err);
 			}
@@ -81,9 +99,10 @@ var SqlClass = function(tableName){
 	}
 	this.queryFields = function(callBack){
 		if( !TBN || typeof TBN !== 'string' ){
-			console.log('[SqlClass ERROR] - NO TABLE');
+			printLog('ERROR', 'NO TABLE');
 		}else{
-			connection.query('show fields from ' + TBN, function(err, rows, fields){
+			printLog('LOG', 'SHOW FIELDS FROM' + TBN);
+			this.connection.query('show fields from ' + TBN, function(err, rows, fields){
 				if( err ){
 					console.log(err);
 				}
@@ -97,32 +116,3 @@ var SqlClass = function(tableName){
 }
 
 module.exports = SqlClass;
-// connection.connect(function(err){
-// 	if(err){
-// 		console.log('[connection connect] error:' + err);
-// 		return;
-// 	}
-// 	console.log('[connection connect] succeed!');
-// });
-/*{
-	select: function(options, callBack){
-		if( typeof options !== 'object' || !options.table ){
-			console.log('[SELECT ERROR] - NO TABLE');
-			return false;
-		}
-		var colums = '*';
-		if( options.colums && options.colums.length ){
-			colums = options.colums.join(', ');
-		}
-		var sql = 'select ' + colums + ' from ' + options.table + ' where 1 = 1';
-		connection.query(sql, function(err, rows, fields){
-			if( err ){
-				console.log(err);
-			}
-			if( rows && callBack ){
-				callBack(rows);
-			}
-		});
-		// connection.end();
-	}
-}*/
