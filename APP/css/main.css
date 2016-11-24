@@ -72,7 +72,10 @@ input[type="date"].emptyDate:before, input.localDateTime.emptyDate:before{ conte
 /* don't forget about the vendor-prefixes! */
 .container{width:100%;height:100%;overflow: auto;}
 .contralBar{width:100%;height:30px;overflow:hidden;}
-
+.contralBar a{width:33.33%;float:left;display:inline-block;height:30px;line-height:30px;text-align:center;font-size:1.4rem;border-right:1px solid #ccc;}
+.contralBar .activeTab{background:#30a9e0;color:#fff}
+.dataBox{width:100%;overflow:hidden;height:calc(100% - 30px;);border-top:1px solid #ccc}
+p.nodata{text-align:center;font-size:1.4rem;color:#999;margin:1rem auto;}
 p.title{font-size:1.6rem;text-indent:1rem;font-weight:bold;}
 #configInfors{width:100%;overflow:hidden;margin:1rem auto;}
 #configInfors li{width:100%;overflow:hidden;font-size:1.4rem;margin-bottom:1rem;}
@@ -87,11 +90,14 @@ p.title{font-size:1.6rem;text-indent:1rem;font-weight:bold;}
 #tableList{width:100%;overflow:hidden;}
 #tableList li{width:100%;height:30px;line-height:30px;border-bottom:1px solid #ccc;font-size: 1.4rem;}
 #tableList li a{width:100%;height:100%;text-indent:1rem;display:block;color:#999}
-#fieldsList{width:100%;height:30px;overflow:hidden;border-bottom:1px solid #ccc;border-top:1px solid #ccc;}
-#dataList{width:100%;height:calc(100% - 60px);overflow:scroll;}
+#fieldsList{width:100%;height:30px;overflow:hidden;border-bottom:1px solid #ccc;}
+#dataList{width:100%;height:calc(100% - 30px);overflow:scroll;}
 #fieldsList ul, #dataList ul{overflow:hidden;width:99999px;}
 #dataList ul{border-bottom:1px solid #ccc;}
 #fieldsList li a, #dataList li a{float:left;display:inline-block;height:30px;line-height:30px;font-size:1.4rem;padding:0 1rem;border-right:1px solid #ccc;overflow:hidden;width:150px;text-align:center;text-overflow:ellipsis;white-space:nowrap;}
 #dataList ul:nth-child(2n){background:#ddd;}
 #dataList ul.highLightLine{background:#30a9e0;color:#fff;}
-
+#structureList{width:100%;overflow:hidden;}
+#structureList li{width:100%;height:30px;overflow:hidden;border-bottom:1px solid #ccc;font-size:1.4rem;}
+#structureList li label{width:25%;height:30px;line-height:30px;display:inline-block;text-indent:1rem;overflow:hidden;}
+#structureList li label:nth-child(3){width:20%;}

@@ -62,6 +62,7 @@ var scrollFn = {};
 	mainCtrl.controller('queryDataController', ['$scope', '$mainService', 
 		function($scope, $mainService){
 			var param = $scope.commonFn.getParamsFromUrl();
+
 			$scope.fn = {
 				highLight: function(item){
 					item.highLight = !item.highLight;
@@ -76,19 +77,24 @@ var scrollFn = {};
 				tableName: param.tableName
 			}, function(res){
 				var dataList = [], data = res.data;
-				for(var i in data){
-					var newJson = [];
-					for(var j in res.fields){
-						newJson.push(data[i][res.fields[j].Field] || '');
+				$scope.showType = 'isStructure';
+				if( data.length ){
+					for(var i in data){
+						var newJson = [];
+						for(var j in res.fields){
+							newJson.push(data[i][res.fields[j].Field] || '');
+						}
+						dataList.push({
+							highLight: false,
+							list: newJson
+						});
 					}
-					dataList.push({
-						highLight: false,
-						list: newJson
-					});
+					$scope.dataList = dataList;
+					$scope.showType = 'isData';
 				}
+				
 				$scope.ulWidth = res.fields.length * 150;
 				$scope.fieldsList = res.fields;
-				$scope.dataList = dataList;
 			});
 		}
 	]);
