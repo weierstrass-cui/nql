@@ -20,7 +20,7 @@ var sendResponse = function(httpResponse, body, status, description){
 		status: status,
 		result: body,
 		description: description || ''
-	}).replace(/'/gi,'"'));
+	}));
 	httpResponse.end();
 }
 
