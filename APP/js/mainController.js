@@ -1,8 +1,14 @@
-// 登录注册
+var scrollFn = {};
 (function(){
 	if( mainCtrl == ''){
 		console.log('mainCtrl 加载出错');
 		return;
+	}
+	scrollFn = {
+		onScroller: function(titleId, obj){
+			var titleBox = document.getElementById(titleId);
+			titleBox.scrollLeft = obj.scrollLeft;
+		}
 	}
 	
 	mainCtrl.controller('configController', ['$scope', '$mainService', '$storage', 
@@ -56,11 +62,33 @@
 	mainCtrl.controller('queryDataController', ['$scope', '$mainService', 
 		function($scope, $mainService){
 			var param = $scope.commonFn.getParamsFromUrl();
+			$scope.fn = {
+				highLight: function(item){
+					item.highLight = !item.highLight;
+				}
+			}
+			$scope.filter = {
+				filterHighLight: function(item){
+					return item !== 'highLight';
+				}
+			}
 			$mainService.queryData({
 				tableName: param.tableName
 			}, function(res){
+				var dataList = [], data = res.data;
+				for(var i in data){
+					var newJson = [];
+					for(var j in res.fields){
+						newJson.push(data[i][res.fields[j].Field] || '');
+					}
+					dataList.push({
+						highLight: false,
+						list: newJson
+					});
+				}
+				$scope.ulWidth = res.fields.length * 150;
 				$scope.fieldsList = res.fields;
-				$scope.dataList = res.data;
+				$scope.dataList = dataList;
 			});
 		}
 	]);

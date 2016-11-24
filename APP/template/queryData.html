@@ -1,13 +1,16 @@
+<div class="contralBar">
+
+</div>
 <div id="fieldsList">
-	<ul>
+	<ul style="width:{{ulWidth}}px">
 		<li ng-repeat="item in fieldsList">
 			<a ng-href="javascript://">{{item.Field}}</a>
 		</li>
 	</ul>
 </div>
-<div id="dataList">
-	<ul ng-repeat="dataLine in dataList">
-		<li ng-repeat="item in dataLine">
+<div id="dataList" onscroll="scrollFn.onScroller('fieldsList', this);">
+	<ul ng-repeat="dataLine in dataList" ng-class="{true:'highLightLine', false: ''}[dataLine.highLight]" ng-click="fn.highLight(dataLine);" style="width:{{ulWidth}}px">
+		<li ng-repeat="item in dataLine.list track by $index">
 			<a ng-href="javascript://">{{item}}</a>
 		</li>
 	</ul>

@@ -65,7 +65,8 @@ var SqlClass = function(options, tableName){
 			console.log('[SqlClass ERROR] - NO TABLE');
 		}else{
 			var colums = colums && colums.length ? colums.join(', ') : '*';
-			var nql = 'select ' + colums + ' from ' + TBN + getWhere() + ' limit 10';
+			// var nql = 'select ' + colums + ' from ' + TBN + getWhere() + ' limit 20';
+			var nql = 'select ' + colums + ' from ' + TBN + getWhere() + '';
 			printLog('LOG', nql);
 			this.connection.query(nql, function(err, rows, fields){
 				if( err ){
