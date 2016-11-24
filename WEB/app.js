@@ -71,6 +71,6 @@ http.createServer(function(req, res){
 		}
 		queryFunctions[pathName] && queryFunctions[pathName].call(postData, res);
 	});
-}).listen(80, 'nql.52ladybug.com', function(){
+}).listen(8080, 'nql.52ladybug.com', function(){
 	console.log('nql running');
 });
