@@ -8,8 +8,7 @@ var mysql = require('mysql'),
 				alwaysIncludePattern: true,
 				filename: '/var/log/node/log-', 
 				pattern: "yyyyMMdd.log",
-				backups: 3,
-				category: 'normal' 
+				backups: 3
 			}
 		]
 	});
