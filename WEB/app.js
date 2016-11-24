@@ -30,7 +30,7 @@ var queryFunctions = {
 		con.queryTable(function(res){
 			var response = [];
 			for(var i in res){
-				response.push(res[i].Tables_in_acs_test);
+				response.push(res[i]['Tables_in_' + dbOption.database]);
 			}
 			con.release();
 			con = null;
@@ -71,6 +71,4 @@ http.createServer(function(req, res){
 		}
 		queryFunctions[pathName] && queryFunctions[pathName].call(postData, res);
 	});
-}).listen(8080, 'nql.52ladybug.com', function(){
-	console.log('nql running');
-});
+}).listen(8080);

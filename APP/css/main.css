@@ -9,7 +9,7 @@ ul,li{list-style:none;}
 input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit}
 input,button,select,textarea{outline:none}
 
-input[type="text"],input[type="tel"],input[type="date"], input.localDateTime{-webkit-appearance:none;background:none}
+input[type="text"],input[type="tel"],input[type="date"], input.localDateTime, input[type="button"]{-webkit-appearance:none;background:none}
 input[type="date"].emptyDate:before, input.localDateTime.emptyDate:before{ content: attr(placeholder);color:#c6c6c6;}
 
 
@@ -72,12 +72,23 @@ input[type="date"].emptyDate:before, input.localDateTime.emptyDate:before{ conte
 /* don't forget about the vendor-prefixes! */
 .container{width: 100%;height: 100%; overflow: auto;}
 
+p.title{font-size:1.6rem;text-indent:1rem;font-weight:bold;}
+#configInfors{width:100%;overflow:hidden;margin:1rem auto;}
+#configInfors li{width:100%;overflow:hidden;font-size:1.4rem;margin-bottom:1rem;}
+#configInfors label{width:30%;text-align:right;display:inline;float:left;}
+#configInfors label:after{content:'：'}
+#configInfors input[type="text"], #configInfors input[type="password"]{background: #fff;border:0 none;border-bottom:1px solid #ccc;width:65%;}
+#configInfors input[type="button"]{width:50%;margin:0 auto;background:#30A9E0;border:0 none;border-radius:10px;display:block;color:#fff;height:30px;}
+#configLists, #configLists p, #configLists ul, #configLists li{width:100%;overflow:hidden;}
+#configLists li{border-top:1px solid #ccc;}
+#configLists li a{width:100%;height:30px;line-height:30px;display:block;text-indent:1.2rem;font-size:1.4rem;}
+
 #tableList{width:100%;overflow:hidden;}
-#tableList li{width:100%;height:30px;line-height:30px;border-bottom:1px solid #ccc;font-size: 1.6rem;}
+#tableList li{width:100%;height:30px;line-height:30px;border-bottom:1px solid #ccc;font-size: 1.4rem;}
 #tableList li a{width:100%;height:100%;text-indent:1rem;display:block;}
 #fieldsList{width:100%;height:30px;overflow:hidden;border-bottom:1px solid #ccc;}
 #dataList{width:100%;height:calc(100% - 30px);overflow:hidden;}
 #fieldsList ul, #dataList ul{overflow:hidden;width:99999px;}
 #dataList ul{border-bottom:1px solid #ccc;}
-#fieldsList li, #dataList li{float:left;display:inline-block;height:30px;line-height:30px;font-size:1.6rem;padding:0 1rem;border-right:1px solid #ccc;overflow:hidden;min-width:100px;max-width:150px;text-align:center;}
+#fieldsList li, #dataList li{float:left;display:inline-block;height:30px;line-height:30px;font-size:1.4rem;padding:0 1rem;border-right:1px solid #ccc;overflow:hidden;min-width:100px;max-width:150px;text-align:center;}
 #dataList ul:nth-child(2n){background:#ddd;}

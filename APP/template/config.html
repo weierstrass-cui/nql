@@ -1,21 +1,36 @@
-<ul>
+<ul id="configInfors">
 	<li>
-		<label>Host</label>
+		<p class="title">创建连接</p>
+	</li>
+	<li>
+		<label>连接名称</label>
+		<input type="text" ng-model="config.cName" />
+	</li>
+	<li>
+		<label>主机</label>
 		<input type="text" ng-model="config.host" />
 	</li>
 	<li>
-		<label>User</label>
+		<label>用户名</label>
 		<input type="text" ng-model="config.user" />
 	</li>
 	<li>
-		<label>Password</label>
-		<input type="text" ng-model="config.password" />
+		<label>密码</label>
+		<input type="password" ng-model="config.password" />
 	</li>
 	<li>
-		<label>Database</label>
+		<label>数据库</label>
 		<input type="text" ng-model="config.database" />
 	</li>
 	<li>
 		<input type="button" ng-click="fn.setConfig();" value="GO" />
 	</li>
 </ul>
+<div id="configLists">
+	<p class="title">连接记录</p>
+	<ul>
+		<li ng-repeat="item in configList">
+			<a href="javascript://" ng-click="fn.setConfig(item);">{{item.cName}}</a>
+		</li>
+	</ul>
+</div>

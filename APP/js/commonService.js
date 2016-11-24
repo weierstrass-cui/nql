@@ -1,5 +1,6 @@
 (function(){
-	var localUrl = 'http://nql.52ladybug.com:8080';
+	var localUrl = 'http://localhost:8080';
+	// var localUrl = 'http://nql.52ladybug.com:8080';
 	// 重写 Date的toJSON方法，满足后台对日期格式的需求
 	// 1990-12-31T00:00:00Z
 	var addZero = function(num){
