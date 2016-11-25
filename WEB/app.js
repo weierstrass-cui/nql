@@ -39,12 +39,16 @@ var queryFunctions = {
 	},
 	'/getDataList': function(httpResponse){
 		if( this.tableName ){
-			var con = new connection(dbOption, this.tableName);
+			var con = new connection(dbOption, this.tableName),
+				currentPage = this.currentPage - 1 || 0;
 			var responseData = {};
 			con.queryFields(function(fieldsRes){
 				responseData.fields = fieldsRes;
-				con.find(null, function(res){
-					responseData.data = res;
+				con.find(null,currentPage , function(res){
+					responseData.data = res.rows;
+					responseData.totalPages = res.totalPages;
+					responseData.totalRows = res.totalRows;
+					
 					con.release();
 					con = null;
 					sendResponse(httpResponse, responseData, "Y");

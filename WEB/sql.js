@@ -13,6 +13,7 @@ var mysql = require('mysql'),
 		]
 	});
 var LogFile = log4js.getLogger('logger');
+var limitNum = 20;
 
 var getNowTime = function(){
 	var date = new Date();
@@ -74,20 +75,34 @@ var SqlClass = function(options, tableName){
 		}
 		return this;
 	}
-	this.find = function(colums, callBack){
+	this.find = function(colums, pageNum, callBack){
 		if( !TBN || typeof TBN !== 'string' ){
 			printLog('error', 'NO TABLE');
 		}else{
-			var colums = colums && colums.length ? colums.join(', ') : '*';
-			// var nql = 'select ' + colums + ' from ' + TBN + getWhere() + ' limit 20';
-			var nql = 'select ' + colums + ' from ' + TBN + getWhere() + '';
-			printLog('info', nql);
-			this.connection.query(nql, function(err, rows, fields){
+			var where = getWhere(), con = this.connection;
+			var nql = 'select count(*) as count from ' + TBN + where;
+			con.query(nql, function(err, rows, fields){
 				if( err ){
 					printLog('error', err);
 				}
-				if( rows && callBack ){
-					callBack(rows);
+				if( rows ){
+					var count = rows[0].count, totalPages = Math.ceil(count / limitNum),
+						colums = colums && colums.length ? colums.join(', ') : '*',
+						startNum = pageNum * limitNum || 0;
+					nql = 'select ' + colums + ' from ' + TBN + where + ' limit ' + startNum + ', ' + limitNum;
+					printLog('info', nql);
+					con.query(nql, function(err, rows, fields){
+						if( err ){
+							printLog('error', err);
+						}
+						if( rows && callBack ){
+							callBack({
+								totalPages: totalPages,
+								totalRows: count,
+								rows: rows
+							});
+						}
+					});
 				}
 			});
 		}

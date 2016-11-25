@@ -61,11 +61,42 @@ var scrollFn = {};
 	]);
 	mainCtrl.controller('queryDataController', ['$scope', '$mainService', 
 		function($scope, $mainService){
-			var param = $scope.commonFn.getParamsFromUrl();
-
+			var param = $scope.commonFn.getParamsFromUrl(), currentPage = 1;
+			$scope.fieldsList = [];
+			var getData = function(){
+				$mainService.queryData({
+					tableName: param.tableName,
+					currentPage: currentPage
+				}, function(res){
+					var dataList = [], data = res.data;
+					$scope.showType = 'isStructure';
+					if( data.length ){
+						for(var i in data){
+							var newJson = [];
+							for(var j in res.fields){
+								newJson.push(data[i][res.fields[j].Field] || '');
+							}
+							dataList.push({
+								highLight: false,
+								list: newJson
+							});
+						}
+						$scope.loadMore = res.totalPages > 1 && res.totalPages != currentPage;
+						currentPage == 1 ? $scope.dataList = dataList : 
+						$scope.dataList.push.apply($scope.dataList, dataList);
+						$scope.showType = 'isData';
+					}
+					$scope.ulWidth = res.fields.length * 150;
+					$scope.fieldsList = res.fields;
+				});
+			}
 			$scope.fn = {
 				highLight: function(item){
 					item.highLight = !item.highLight;
+				},
+				loadMore: function(){
+					currentPage += 1;
+					getData();
 				}
 			}
 			$scope.filter = {
@@ -73,29 +104,7 @@ var scrollFn = {};
 					return item !== 'highLight';
 				}
 			}
-			$mainService.queryData({
-				tableName: param.tableName
-			}, function(res){
-				var dataList = [], data = res.data;
-				$scope.showType = 'isStructure';
-				if( data.length ){
-					for(var i in data){
-						var newJson = [];
-						for(var j in res.fields){
-							newJson.push(data[i][res.fields[j].Field] || '');
-						}
-						dataList.push({
-							highLight: false,
-							list: newJson
-						});
-					}
-					$scope.dataList = dataList;
-					$scope.showType = 'isData';
-				}
-				
-				$scope.ulWidth = res.fields.length * 150;
-				$scope.fieldsList = res.fields;
-			});
+			getData();
 		}
 	]);
 })();

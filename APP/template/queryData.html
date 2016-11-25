@@ -33,6 +33,7 @@
 				<a ng-href="javascript://">{{item}}</a>
 			</li>
 		</ul>
+		<a href="javascript://" class="loadMore" ng-show="loadMore" ng-click="fn.loadMore();">加载更多</a>
 	</div>
 	<p class="nodata" ng-show="!dataList.length">无数据</p>
 </div>
