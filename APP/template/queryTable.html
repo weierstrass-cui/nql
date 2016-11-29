@@ -1,6 +1,9 @@
+<div class="searchArea">
+	<input type="text" class="search" ng-model="filterWord" placeholder="输入表名快速搜索" />
+</div>
 <ul id="tableList">
 	<li><p class="title">表<p></li>
-	<li ng-repeat="item in tableList">
+	<li ng-repeat="item in tableList | filter:filter.tableFilter">
 		<a ng-href="#queryData?tableName={{item}}">{{item}}</a>
 	</li>
 </ul>

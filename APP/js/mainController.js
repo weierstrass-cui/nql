@@ -54,6 +54,11 @@ var scrollFn = {};
 	]);
 	mainCtrl.controller('queryTableController', ['$scope', '$mainService', 
 		function($scope, $mainService){
+			$scope.filter = {
+				tableFilter: function(item){
+					return !$scope.filterWord || item.indexOf($scope.filterWord) >= 0;
+				}
+			}
 			$mainService.queryTable({}, function(res){
 				$scope.tableList = res;
 			});

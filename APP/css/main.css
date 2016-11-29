@@ -88,7 +88,7 @@ p.title{font-size:1.6rem;text-indent:1rem;font-weight:bold;}
 #configLists li{border-top:1px solid #ccc;}
 #configLists li a{width:100%;height:30px;line-height:30px;display:block;text-indent:1.2rem;font-size:1.4rem;color:#999;}
 
-#tableList{width:100%;overflow:hidden;}
+#tableList{width:100%;overflow:hidden;height:calc(100% - 40px);overflow:scroll;}
 #tableList li{width:100%;height:30px;line-height:30px;border-bottom:1px solid #ccc;font-size: 1.4rem;}
 #tableList li a{width:100%;height:100%;text-indent:1rem;display:block;color:#999}
 #fieldsList{width:100%;height:30px;overflow:hidden;border-bottom:1px solid #ccc;}
@@ -102,3 +102,10 @@ p.title{font-size:1.6rem;text-indent:1rem;font-weight:bold;}
 #structureList li{width:100%;height:30px;overflow:hidden;border-bottom:1px solid #ccc;font-size:1.4rem;}
 #structureList li label{width:25%;height:30px;line-height:30px;display:inline-block;text-indent:1rem;overflow:hidden;}
 #structureList li label:nth-child(3){width:20%;}
+.searchArea{width:100%;overflow:hidden;height:40px;border-bottom:1px solid #ccc;position:relative;}
+.searchArea:after{content:'\f002';font-family:FontAwesome;font-size:1.4rem;color:#999;float:right;position:absolute;right:7%;display:inline-block;top:8px;width:20px;height:20px;}
+.searchArea .search{width:90%;height:30px;border:1px solid #ccc;border-radius:10px;margin:5px auto;display:block;text-indent:1rem;font-size:1.4rem;position:relative;}
+
+
+
+
