@@ -40,11 +40,19 @@ var queryFunctions = {
 	'/getDataList': function(httpResponse){
 		if( this.tableName ){
 			var con = new connection(dbOption, this.tableName),
-				currentPage = this.currentPage - 1 || 0;
+				currentPage = this.currentPage - 1 || 0,
+				orderField = this.orderField,
+				orderType = this.orderType;
 			var responseData = {};
 			con.queryFields(function(fieldsRes){
 				responseData.fields = fieldsRes;
-				con.find(null,currentPage , function(res){
+				if( orderField && orderType ){
+					con.setOrder({
+						orderField: orderField,
+						orderType: orderType
+					});
+				}
+				con.find(null, currentPage, function(res){
 					responseData.data = res.rows;
 					responseData.totalPages = res.totalPages;
 					responseData.totalRows = res.totalRows;

@@ -96,6 +96,10 @@ p.title{font-size:1.6rem;text-indent:1rem;font-weight:bold;}
 #fieldsList ul, #dataList ul{overflow:hidden;width:99999px;}
 #dataList ul{border-bottom:1px solid #ccc;}
 #fieldsList li a, #dataList li a{float:left;display:inline-block;height:30px;line-height:30px;font-size:1.4rem;padding:0 1rem;border-right:1px solid #ccc;overflow:hidden;width:150px;text-align:center;text-overflow:ellipsis;white-space:nowrap;}
+#fieldsList li a{background:linear-gradient(#ccc, #fff);}
+#fieldsList li a.orderDesc:after{content:'\f107';font-family:FontAwesome;font-size:1.8rem;margin-left:5px;}
+#fieldsList li a.orderAsc:after{content:'\f106';font-family:FontAwesome;font-size:1.8rem;margin-left:5px;}
+
 #dataList ul:nth-child(2n){background:#ddd;}
 #dataList ul.highLightLine{background:#30a9e0;color:#fff;}
 #structureList{width:100%;overflow:hidden;}

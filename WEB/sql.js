@@ -38,7 +38,7 @@ var SqlClass = function(options, tableName){
 		database: options.database
 	});
 	printLog('info', 'CONNECTED CONNECTION');
-	var TBN = tableName, WHERE = [];
+	var TBN = tableName, WHERE = [], ORDER = '';
 
 	var getWhere = function(){
 		var _there = ' where 1 = 1';
@@ -47,6 +47,11 @@ var SqlClass = function(options, tableName){
 			WHERE = [];
 		}
 		return _there;
+	}
+	var getOrder = function(){
+		var orderString = ORDER;
+		ORDER = '';
+		return orderString;
 	}
 	this.release = function(){
 		this.connection.end();
@@ -89,7 +94,7 @@ var SqlClass = function(options, tableName){
 					var count = rows[0].count, totalPages = Math.ceil(count / limitNum),
 						colums = colums && colums.length ? colums.join(', ') : '*',
 						startNum = pageNum * limitNum || 0;
-					nql = 'select ' + colums + ' from ' + TBN + where + ' limit ' + startNum + ', ' + limitNum;
+					nql = 'select ' + colums + ' from ' + TBN + where  + getOrder() + ' limit ' + startNum + ', ' + limitNum;
 					printLog('info', nql);
 					con.query(nql, function(err, rows, fields){
 						if( err ){
@@ -113,6 +118,10 @@ var SqlClass = function(options, tableName){
 		for(var i in opts){
 			WHERE.push(i + '= "' + opts[i] + '"');
 		}
+		return this;
+	}
+	this.setOrder = function(opts){
+		ORDER = ' order by ' + opts.orderField + ' ' + opts.orderType;
 		return this;
 	}
 	this.queryTable = function(callBack){

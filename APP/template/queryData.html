@@ -23,7 +23,7 @@
 	<div id="fieldsList">
 		<ul style="width:{{ulWidth}}px">
 			<li ng-repeat="item in fieldsList">
-				<a ng-href="javascript://">{{item.Field}}</a>
+				<a ng-href="javascript://" ng-class="{'desc': 'orderDesc', 'asc': 'orderAsc'}[item.orderType]" ng-click="fn.setOrder(item);">{{item.Field}}</a>
 			</li>
 		</ul>
 	</div>

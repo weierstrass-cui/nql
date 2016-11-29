@@ -66,13 +66,18 @@ var scrollFn = {};
 	]);
 	mainCtrl.controller('queryDataController', ['$scope', '$mainService', 
 		function($scope, $mainService){
-			var param = $scope.commonFn.getParamsFromUrl(), currentPage = 1;
+			var param = $scope.commonFn.getParamsFromUrl(), currentPage = 1,
+				orderField = null, orderType = null;
 			$scope.fieldsList = [];
 			var getData = function(){
-				$mainService.queryData({
+				var submitData = {
 					tableName: param.tableName,
-					currentPage: currentPage
-				}, function(res){
+					currentPage: currentPage,
+					orderField: orderField,
+					orderType: orderType
+				};
+
+				$mainService.queryData(submitData, function(res){
 					var dataList = [], data = res.data;
 					$scope.showType = 'isStructure';
 					if( data.length ){
@@ -91,8 +96,18 @@ var scrollFn = {};
 						$scope.dataList.push.apply($scope.dataList, dataList);
 						$scope.showType = 'isData';
 					}
-					$scope.ulWidth = res.fields.length * 150;
 					$scope.fieldsList = res.fields;
+					$scope.ulWidth = res.fields.length * 150;
+
+					if( orderField ){
+						for(var i in $scope.fieldsList ){
+							if( $scope.fieldsList[i].Field == orderField ){
+								$scope.fieldsList[i].orderType = orderType;
+								break;
+							}
+						}
+					}
+					
 				});
 			}
 			$scope.fn = {
@@ -101,6 +116,13 @@ var scrollFn = {};
 				},
 				loadMore: function(){
 					currentPage += 1;
+					getData();
+				},
+				setOrder: function(item){
+					orderField == item.Field ?
+					( orderType = orderType = 'asc' ? 'desc' : 'asc' ) : 
+					( orderType = 'asc', orderField = item.Field );
+					currentPage = 1;
 					getData();
 				}
 			}
