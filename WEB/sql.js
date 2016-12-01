@@ -4,11 +4,10 @@ var mysql = require('mysql'),
 		appenders: [
 			{
 				category: 'logger',
-				type: 'dateFile', //文件输出
+				type: 'dateFile',
 				alwaysIncludePattern: true,
 				filename: '/var/log/node/log-', 
-				pattern: "yyyyMMdd.log",
-				backups: 3
+				pattern: "yyyyMMdd.log"
 			}
 		]
 	});
@@ -37,7 +36,7 @@ var SqlClass = function(options, tableName){
 		password: options.password,
 		database: options.database
 	});
-	printLog('info', 'CONNECTED CONNECTION');
+	// printLog('info', 'CONNECTED CONNECTION');
 	var TBN = tableName, WHERE = [], ORDER = '';
 
 	var getWhere = function(){
@@ -55,7 +54,7 @@ var SqlClass = function(options, tableName){
 	}
 	this.release = function(){
 		this.connection.end();
-		printLog('info', 'RELEASE CONNECTION');
+		// printLog('info', 'RELEASE CONNECTION');
 		return this;
 	}
 	this.insert = function(){
@@ -75,6 +74,7 @@ var SqlClass = function(options, tableName){
 			this.connection.query(nql, function(err, rows, fields){
 				if( err ){
 					printLog('error', err);
+					return;
 				}
 			});
 		}
@@ -89,6 +89,7 @@ var SqlClass = function(options, tableName){
 			con.query(nql, function(err, rows, fields){
 				if( err ){
 					printLog('error', err);
+					return;
 				}
 				if( rows ){
 					var count = rows[0].count, totalPages = Math.ceil(count / limitNum),
@@ -99,6 +100,7 @@ var SqlClass = function(options, tableName){
 					con.query(nql, function(err, rows, fields){
 						if( err ){
 							printLog('error', err);
+							return;
 						}
 						if( rows && callBack ){
 							callBack({
@@ -129,6 +131,7 @@ var SqlClass = function(options, tableName){
 		this.connection.query('show tables', function(err, rows, fields){
 			if( err ){
 				printLog('error', err);
+				return;
 			}
 			if( rows && callBack ){
 				callBack(rows);
@@ -144,6 +147,7 @@ var SqlClass = function(options, tableName){
 			this.connection.query('show fields from ' + TBN, function(err, rows, fields){
 				if( err ){
 					printLog('error', err);
+					return;
 				}
 				if( rows && callBack ){
 					callBack(rows);
