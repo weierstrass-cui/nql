@@ -1,7 +1,8 @@
 var http = require('http'),
 	url = require('url'),
 	querystring = require('querystring');
-var connection = require('./sql.js');
+var connection = require('./sql.js'),
+	log4js = require('./loger.js');
 
 var dbOption = null;
 // ck.where({
@@ -16,11 +17,13 @@ var dbOption = null;
 // 	console.log(res);
 // });
 var sendResponse = function(httpResponse, body, status, description){
-	httpResponse.write(JSON.stringify({
+	var responseBody = JSON.stringify({
 		status: status,
 		result: body,
 		description: description || ''
-	}));
+	})
+	// log4js('info', responseBody);
+	httpResponse.write(responseBody);
 	httpResponse.end();
 }
 
@@ -81,6 +84,7 @@ http.createServer(function(req, res){
 			password: postData.password,
 			database: postData.database
 		}
+		log4js('info', JSON.stringify(postData));
 		queryFunctions[pathName] && queryFunctions[pathName].call(postData, res);
 	});
 }).listen(8080);

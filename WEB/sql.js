@@ -1,17 +1,5 @@
 var mysql = require('mysql'),
-	log4js = require('log4js');
-	log4js.configure({
-		appenders: [
-			{
-				category: 'logger',
-				type: 'dateFile',
-				alwaysIncludePattern: true,
-				filename: '/var/log/node/log-', 
-				pattern: "yyyyMMdd.log"
-			}
-		]
-	});
-var LogFile = log4js.getLogger('logger');
+	log4js = require('./loger.js');
 var limitNum = 20;
 
 var getNowTime = function(){
@@ -21,13 +9,10 @@ var getNowTime = function(){
 	}
 	return date.getFullYear() + '-' + addZero(date.getMonth() + 1) + '-' + addZero(date.getDate()) + ' ' + addZero(date.getHours()) + ':' + addZero(date.getMinutes()) + ':' + addZero(date.getSeconds());
 }
-var printLog = function(type, logBody){
-	LogFile[type](logBody);
-}
 
 var SqlClass = function(options, tableName){
 	if( !options || typeof options !== 'object' ){
-		printLog('error', 'NO DATABASE INFORMATION');
+		log4js('error', 'NO DATABASE INFORMATION');
 		return false;
 	}
 	this.connection = mysql.createConnection({
@@ -36,7 +21,7 @@ var SqlClass = function(options, tableName){
 		password: options.password,
 		database: options.database
 	});
-	// printLog('info', 'CONNECTED CONNECTION');
+	// log4js('info', 'CONNECTED CONNECTION');
 	var TBN = tableName, WHERE = [], ORDER = '';
 
 	var getWhere = function(){
@@ -54,7 +39,7 @@ var SqlClass = function(options, tableName){
 	}
 	this.release = function(){
 		this.connection.end();
-		// printLog('info', 'RELEASE CONNECTION');
+		// log4js('info', 'RELEASE CONNECTION');
 		return this;
 	}
 	this.insert = function(){
@@ -62,7 +47,7 @@ var SqlClass = function(options, tableName){
 	}
 	this.update = function(opts){
 		if( !TBN || typeof TBN !== 'string' ){
-			printLog('error', 'NO TABLE');
+			log4js('error', 'NO TABLE');
 		}else{
 			var SET = [];
 			for(var i in opts){
@@ -70,10 +55,10 @@ var SqlClass = function(options, tableName){
 			}
 			SET = SET.join(', ');
 			var nql = 'update ' + TBN + ' set ' + SET + getWhere();
-			printLog('info', nql);
+			log4js('info', nql);
 			this.connection.query(nql, function(err, rows, fields){
 				if( err ){
-					printLog('error', err);
+					log4js('error', err);
 					return;
 				}
 			});
@@ -82,13 +67,13 @@ var SqlClass = function(options, tableName){
 	}
 	this.find = function(colums, pageNum, callBack){
 		if( !TBN || typeof TBN !== 'string' ){
-			printLog('error', 'NO TABLE');
+			log4js('error', 'NO TABLE');
 		}else{
 			var where = getWhere(), con = this.connection;
 			var nql = 'select count(*) as count from ' + TBN + where;
 			con.query(nql, function(err, rows, fields){
 				if( err ){
-					printLog('error', err);
+					log4js('error', err);
 					return;
 				}
 				if( rows ){
@@ -96,10 +81,10 @@ var SqlClass = function(options, tableName){
 						colums = colums && colums.length ? colums.join(', ') : '*',
 						startNum = pageNum * limitNum || 0;
 					nql = 'select ' + colums + ' from ' + TBN + where  + getOrder() + ' limit ' + startNum + ', ' + limitNum;
-					printLog('info', nql);
+					log4js('info', nql);
 					con.query(nql, function(err, rows, fields){
 						if( err ){
-							printLog('error', err);
+							log4js('error', err);
 							return;
 						}
 						if( rows && callBack ){
@@ -127,10 +112,10 @@ var SqlClass = function(options, tableName){
 		return this;
 	}
 	this.queryTable = function(callBack){
-		printLog('info', 'SHOW TABLES');
+		log4js('info', 'show tables');
 		this.connection.query('show tables', function(err, rows, fields){
 			if( err ){
-				printLog('error', err);
+				log4js('error', err);
 				return;
 			}
 			if( rows && callBack ){
@@ -141,12 +126,12 @@ var SqlClass = function(options, tableName){
 	}
 	this.queryFields = function(callBack){
 		if( !TBN || typeof TBN !== 'string' ){
-			printLog('error', 'NO TABLE');
+			log4js('error', 'NO TABLE');
 		}else{
-			printLog('info', 'SHOW FIELDS FROM' + TBN);
+			log4js('info', 'show fields from ' + TBN);
 			this.connection.query('show fields from ' + TBN, function(err, rows, fields){
 				if( err ){
-					printLog('error', err);
+					log4js('error', err);
 					return;
 				}
 				if( rows && callBack ){
