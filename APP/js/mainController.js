@@ -38,7 +38,7 @@ var scrollFn = {};
 					if( item ){
 						$scope.config = item;
 					}
-					if( !$scope.config.cName || !$scope.config.host || !$scope.config.user || !$scope.config.password || !$scope.config.database ){
+					if( !$scope.config.cName || !$scope.config.host || !$scope.config.user || !$scope.config.database ){
 						$scope.commonFn.alertMsg(null, '连接信息不全');
 						return false;
 					}
