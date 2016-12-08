@@ -4,6 +4,6 @@
 <ul id="tableList">
 	<li><p class="title">表<p></li>
 	<li ng-repeat="item in tableList | filter:filter.tableFilter">
-		<a ng-href="#queryData?tableName={{item}}">{{item}}</a>
+		<a ng-href="#queryData?tableName={{::item}}">{{::item}}</a>
 	</li>
 </ul>

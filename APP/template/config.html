@@ -30,7 +30,7 @@
 	<p class="title">连接记录</p>
 	<ul>
 		<li ng-repeat="item in configList">
-			<a href="javascript://" ng-click="fn.setConfig(item);">{{item.cName}}</a>
+			<a href="javascript://" ng-click="fn.setConfig(item);">{{::item.cName}}</a>
 		</li>
 	</ul>
 </div>
