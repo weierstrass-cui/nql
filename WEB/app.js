@@ -84,6 +84,7 @@ http.createServer(function(req, res){
 			password: postData.password,
 			database: postData.database
 		}
+		log4js('info', 'pathName: ' + pathName);
 		log4js('info', JSON.stringify(postData));
 		queryFunctions[pathName] && queryFunctions[pathName].call(postData, res);
 	});

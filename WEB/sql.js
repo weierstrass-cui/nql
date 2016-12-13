@@ -2,14 +2,6 @@ var mysql = require('mysql'),
 	log4js = require('./loger.js');
 var limitNum = 20;
 
-var getNowTime = function(){
-	var date = new Date();
-	var addZero = function(num){
-		return num > 9 ? num : ('0' + num);
-	}
-	return date.getFullYear() + '-' + addZero(date.getMonth() + 1) + '-' + addZero(date.getDate()) + ' ' + addZero(date.getHours()) + ':' + addZero(date.getMinutes()) + ':' + addZero(date.getSeconds());
-}
-
 var SqlClass = function(options, tableName){
 	if( !options || typeof options !== 'object' ){
 		log4js('error', 'NO DATABASE INFORMATION');
