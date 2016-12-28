@@ -70,7 +70,6 @@ var queryFunctions = {
 }
 
 http.createServer(function(req, res){
-	res.writeHeader(200, {'content-type':'text/html;charset=utf-8', "Access-Control-Allow-Origin":"*"});
 	var post = '', pathName = '';
 	req.on('data', function(chunk){
 		post += chunk;
@@ -84,8 +83,15 @@ http.createServer(function(req, res){
 			password: postData.password,
 			database: postData.database
 		}
-		log4js('info', 'pathName: ' + pathName);
-		log4js('info', JSON.stringify(postData));
-		queryFunctions[pathName] && queryFunctions[pathName].call(postData, res);
+		var postDataString = JSON.stringify(postData);
+		if( pathName != '/' && postDataString != '{}' ){
+			res.writeHeader(200, {'content-type':'text/html;charset=utf-8', "Access-Control-Allow-Origin":"*"});
+			log4js('info', 'pathName: ' + pathName);
+			log4js('info', JSON.stringify(postData));
+			queryFunctions[pathName] && queryFunctions[pathName].call(postData, res);
+		}else{
+			res.writeHeader(404, {'content-type':'text/html;charset=utf-8', "Access-Control-Allow-Origin":"*"});
+			res.end();
+		}
 	});
 }).listen(8080);
