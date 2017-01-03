@@ -70,7 +70,7 @@
 					json[i] = dbConfig[i];
 				}
 
-				$http.post(postUrl, json, {
+				$http.post(postUrl, {data: JSON.stringify(json)}, {
 				    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
 				    transformRequest: transform
 				})

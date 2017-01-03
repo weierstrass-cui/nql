@@ -5,17 +5,18 @@ var connection = require('./sql.js'),
 	log4js = require('./loger.js');
 
 var dbOption = null;
-// ck.where({
-// 	'id': 1
-// }).update({
-// 	name: '崔小瓢'
-// });
-
-// ck.where({
-// 	'id': 1
-// }).find(null, function(res){
-// 	console.log(res);
-// });
+var addZero = function(num){
+		return num < 10 ? ('0' + num) : num;
+	}
+Date.prototype.toJSON = function(){
+	var str = this.getFullYear() + '-';
+		str += addZero(this.getMonth() + 1) + '-';
+		str += addZero(this.getDate()) + ' ';
+		str += addZero(this.getHours()) + ':';
+		str += addZero(this.getMinutes()) + ':';
+		str += addZero(this.getSeconds()) + '';
+	return str;
+}
 var sendResponse = function(httpResponse, body, status, description){
 	var responseBody = JSON.stringify({
 		status: status,
@@ -66,6 +67,25 @@ var queryFunctions = {
 				});
 			});
 		}
+	},
+	'/updateData': function(httpResponse){
+		if( this.whereList === '{}' || this.updateList === '{}' ){
+			sendResponse(httpResponse, '', 'N', '参数错误');
+			return false;
+		}
+		var whereList = {}, whereListCache = this.whereList;
+		for(var i in whereListCache){
+			if( whereListCache[i] !== '' ) whereList[i] = whereListCache[i];
+		}
+		var con = new connection(dbOption, this.tableName);
+		con.where(whereList).update(this.updateList, function(res){
+			var responseData = {};
+			responseData.data = res.rows;
+			
+			con.release();
+			con = null;
+			sendResponse(httpResponse, responseData, "Y");
+		});
 	}
 }
 
@@ -75,7 +95,7 @@ http.createServer(function(req, res){
 		post += chunk;
 	});
 	req.on('end', function(){
-		postData = querystring.parse(post);
+		postData = JSON.parse(querystring.parse(post).data);
 		pathName = url.parse(req.url, true).pathname;
 		dbOption = {
 			host: postData.host,
@@ -84,13 +104,13 @@ http.createServer(function(req, res){
 			database: postData.database
 		}
 		var postDataString = JSON.stringify(postData);
-		if( pathName != '/' && postDataString != '{}' ){
+		if( pathName != '/' && postDataString && postDataString != '{}' ){
 			res.writeHeader(200, {'content-type':'text/html;charset=utf-8', "Access-Control-Allow-Origin":"*"});
 			log4js('info', 'pathName: ' + pathName);
 			log4js('info', JSON.stringify(postData));
 			queryFunctions[pathName] && queryFunctions[pathName].call(postData, res);
 		}else{
-			res.writeHeader(404, {'content-type':'text/html;charset=utf-8', "Access-Control-Allow-Origin":"*"});
+			res.writeHeader(500, {'content-type':'text/html;charset=utf-8', "Access-Control-Allow-Origin":"*"});
 			res.end();
 		}
 	});

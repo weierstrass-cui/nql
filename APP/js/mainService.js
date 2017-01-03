@@ -10,6 +10,9 @@
 			},
 			queryData: function(json, callback){
 				request.post('/getDataList', json, callback);
+			},
+			updateData: function(json, callback){
+				request.post('/updateData', json, callback);
 			}
 		}
 	}]);

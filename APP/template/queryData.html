@@ -13,7 +13,7 @@
 		</li>
 		<li ng-repeat="item in fieldsList">
 			<label>{{::item.Field}}</label>
-			<label>{{::item.Type}}</label>
+			<label class="fieldTypeLabel">{{::item.Type}}</label>
 			<label>{{::item.Null}}</label>
 			<label>{{::item.Default}}</label>
 		</li>
@@ -37,4 +37,23 @@
 </div>
 <div class="dataBox" ng-show="showType=='isSelect'">
 	
+</div>
+<div class="dataDetail floatMask" ng-click="dataDetail = null;" ng-show="dataDetail">
+	<div class="floatBox" ng-click="$event.stopPropagation();">
+		<div class="floatBoxTitle"></div>
+		<div class="floatBoxBody">
+			<ul class="fieldNameList">
+				<li ng-repeat="item in fieldsList">{{::item.Field}}</li>
+			</ul>
+			<ul class="fieldValueList">
+				<li ng-repeat="item in dataDetail track by $index">
+					<input type="text" ng-model="dataDetail[$index]" />
+				</li>
+			</ul>
+		</div>
+		<div class="floatBoxFooter">
+			<a href="javascript://" ng-click="dataDetail = null;">取消</a>
+			<a href="javascript://" ng-click="fn.updateData();">修改</a>
+		</div>
+	</div>
 </div>

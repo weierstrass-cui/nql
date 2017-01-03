@@ -102,14 +102,28 @@ p.title{font-size:1.6rem;text-indent:1rem;font-weight:bold;}
 
 #dataList ul:nth-child(2n){background:#ddd;}
 #dataList ul.highLightLine{background:#30a9e0;color:#fff;}
-#structureList{width:100%;overflow:hidden;}
+#structureList{width:100%;overflow:hidden;height:100%;overflow-y:scroll;}
 #structureList li{width:100%;height:30px;overflow:hidden;border-bottom:1px solid #ccc;font-size:1.4rem;}
-#structureList li label{width:25%;height:30px;line-height:30px;display:inline-block;text-indent:1rem;overflow:hidden;}
+#structureList li label{width:26%;height:30px;line-height:30px;display:inline-block;text-indent:1rem;overflow:hidden;}
 #structureList li label:nth-child(3){width:20%;}
+#structureList .fieldTypeLabel{font-style:italic;color:#999}
 .searchArea{width:100%;overflow:hidden;height:40px;border-bottom:1px solid #ccc;position:relative;}
 .searchArea:after{content:'\f002';font-family:FontAwesome;font-size:1.4rem;color:#999;float:right;position:absolute;right:7%;display:inline-block;top:8px;width:20px;height:20px;}
 .searchArea .search{width:90%;height:30px;border:1px solid #ccc;border-radius:10px;margin:5px auto;display:block;text-indent:1rem;font-size:1.4rem;position:relative;}
 
-
-
+.floatMask{width:100%;height:100%;background:rgba(0,0,0,0.5);position:fixed;z-index:99;top:0;left:0;}
+.floatBox{background:#fff;border-radius:10px;width:90%;position:absolute;left:50%;top:20%;margin:0 0 0 -45%;}
+.floatBox > div{width:100%;overflow:hidden;}
+.floatBox .floatBoxTitle{height:30px;line-height:30px;border-bottom:1px solid #ccc;}
+.floatBox .floatBoxFooter{height:40px;line-height:40px;border-top:1px solid #ccc;}
+.floatBox .floatBoxBody{max-height:300px;overflow:hidden;padding:0 10px;overflow-y:scroll;}
+.floatBox .floatBoxBody .fieldNameList{width:40%;overflow:hidden;float:left;display:inline-block;font-weight:bold;}
+.floatBox .floatBoxBody .fieldValueList{width:60%;overflow:hidden;float:left;display:inline-block;}
+.floatBox .floatBoxBody .fieldNameList li, .floatBox .floatBoxBody .fieldValueList li{width:100%;height:30px;line-height:30px;overflow:hidden;font-size:1.4rem;text-indent:5px;border-bottom:1px solid #ccc;text-overflow:ellipsis;white-space:nowrap;}
+.floatBox .floatBoxBody .fieldNameList li:last-child, .floatBox .floatBoxBody .fieldValueList li:last-child{border-bottom:0 none;}
+.floatBox .floatBoxBody .fieldValueList li{border-left:1px solid #ccc;}
+.floatBox .floatBoxBody .fieldValueList li input{width:95%;height:100%;border:0 none;}
+.floatBox .floatBoxFooter a{width:50%;float:left;display:inline-block;height:100%;font-size:1.6rem;text-align:center;}
+.floatBox .floatBoxFooter a:active{background:#30a9e0;color:#fff;}
+.floatBox .floatBoxFooter a:first-child{border-right:1px solid #ccc;}
 

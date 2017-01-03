@@ -10,7 +10,7 @@ var scrollFn = {};
 			titleBox.scrollLeft = obj.scrollLeft;
 		}
 	}
-	
+	// 配置页
 	mainCtrl.controller('configController', ['$scope', '$mainService', '$storage', 
 		function($scope, $mainService, $storage){
 			var configList = $scope.configList = JSON.parse($storage.getLocalStorage('NQL_ConfigList')) || [];
@@ -52,6 +52,7 @@ var scrollFn = {};
 			}
 		}
 	]);
+	// 表列表页
 	mainCtrl.controller('queryTableController', ['$scope', '$mainService', 
 		function($scope, $mainService){
 			$scope.filter = {
@@ -64,10 +65,13 @@ var scrollFn = {};
 			});
 		}
 	]);
+	// 数据展示页
 	mainCtrl.controller('queryDataController', ['$scope', '$mainService', 
 		function($scope, $mainService){
 			var param = $scope.commonFn.getParamsFromUrl(), currentPage = 1,
-				orderField = null, orderType = null;
+				orderField = null, orderType = null,
+				tapTime = 0, tapHashKey = null,
+				rawData = null;
 			$scope.fieldsList = [];
 			var getData = function(){
 				var submitData = {
@@ -112,7 +116,46 @@ var scrollFn = {};
 			}
 			$scope.fn = {
 				highLight: function(item){
-					item.highLight = !item.highLight;
+					var time = new Date().getTime(),
+						hashKey = item.$$hashKey;
+					if( tapHashKey && hashKey === tapHashKey && (time - tapTime) < 300 ){
+						$scope.dataDetail = angular.extend([], item.list);
+						rawData = item.list;
+						tapHashKey = null;
+						tapTime = 0;
+						item.highLight = true;
+					}else{
+						rawData = null;
+						tapHashKey = hashKey;
+						tapTime = time;
+						item.highLight = !item.highLight;
+					}
+				},
+				updateData: function(){
+					var whereList = {}, updateList = {};
+					for(var i in $scope.fieldsList){
+						if( $scope.dataDetail[i] == rawData[i] ){
+							whereList[$scope.fieldsList[i].Field] = rawData[i];
+						}else{
+							if( $scope.fieldsList[i].Null == 'NO' && (!$scope.dataDetail[i] || $scope.dataDetail[i] == '') ){
+								$scope.commonFn.alertMsg(null, $scope.fieldsList[i].Field + '字段不能为空');
+								break;
+							}
+							updateList[$scope.fieldsList[i].Field] = $scope.dataDetail[i];
+						}
+					}
+					if( JSON.stringify(updateList) !== '{}' ){
+						$mainService.updateData({
+							tableName: param.tableName,
+							whereList: whereList,
+							updateList: updateList
+						}, function(res){
+							for(var i in $scope.fieldsList){
+								rawData[i] = res.data[$scope.fieldsList[i].Field] || ''
+							}
+						});
+					}
+					$scope.dataDetail = null;
 				},
 				loadMore: function(){
 					currentPage += 1;
