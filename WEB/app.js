@@ -24,68 +24,101 @@ var sendResponse = function(httpResponse, body, status, description){
 		description: description || ''
 	})
 	// log4js('info', responseBody);
+
+	httpResponse.writeHeader(200, {'content-type':'text/html;charset=utf-8', "Access-Control-Allow-Origin":"*"});
 	httpResponse.write(responseBody);
 	httpResponse.end();
 }
 
 var queryFunctions = {
 	'/getTableList': function(httpResponse){
-		var con = new connection(dbOption);
-		con.queryTable(function(res){
-			var response = [];
-			for(var i in res){
-				response.push(res[i]['Tables_in_' + dbOption.database]);
-			}
-			con.release();
-			con = null;
-			sendResponse(httpResponse, response, "Y");
-		});
+		try{
+			var con = new connection(dbOption);
+			con.queryTable(function(res){
+				if( res === 'ERROR'){
+					sendResponse(httpResponse, '', "N", '获取表失败');
+					return;
+				}
+				var response = [];
+				for(var i in res){
+					response.push(res[i]['Tables_in_' + dbOption.database]);
+				}
+				con.release();
+				con = null;
+				sendResponse(httpResponse, response, "Y");
+			});
+		}catch(e){
+			log4js('error', e);
+			sendResponse(httpResponse, '', "N", '系统错误');
+		}
 	},
 	'/getDataList': function(httpResponse){
-		if( this.tableName ){
-			var con = new connection(dbOption, this.tableName),
-				currentPage = this.currentPage - 1 || 0,
-				orderField = this.orderField,
-				orderType = this.orderType;
-			var responseData = {};
-			con.queryFields(function(fieldsRes){
-				responseData.fields = fieldsRes;
-				if( orderField && orderType ){
-					con.setOrder({
-						orderField: orderField,
-						orderType: orderType
+		try{
+			if( this.tableName ){
+				var con = new connection(dbOption, this.tableName),
+					currentPage = this.currentPage - 1 || 0,
+					orderField = this.orderField,
+					orderType = this.orderType;
+				var responseData = {};
+				con.queryFields(function(fieldsRes){
+					if( fieldsRes === 'ERROR' ){
+						sendResponse(httpResponse, '', "N", '获取字段列表失败');
+						return;
+					}
+					responseData.fields = fieldsRes;
+					if( orderField && orderType ){
+						con.setOrder({
+							orderField: orderField,
+							orderType: orderType
+						});
+					}
+					con.find(null, currentPage, function(res){
+						if( fieldsRes === 'ERROR' ){
+							sendResponse(httpResponse, '', "N", '获取数据失败');
+							return;
+						}
+						responseData.data = res.rows;
+						responseData.totalPages = res.totalPages;
+						responseData.totalRows = res.totalRows;
+						
+						con.release();
+						con = null;
+						sendResponse(httpResponse, responseData, "Y");
 					});
-				}
-				con.find(null, currentPage, function(res){
-					responseData.data = res.rows;
-					responseData.totalPages = res.totalPages;
-					responseData.totalRows = res.totalRows;
-					
-					con.release();
-					con = null;
-					sendResponse(httpResponse, responseData, "Y");
 				});
-			});
+			}
+		}catch(e){
+			log4js('error', e);
+			sendResponse(httpResponse, '', "N", '系统错误');
 		}
 	},
 	'/updateData': function(httpResponse){
-		if( this.whereList === '{}' || this.updateList === '{}' ){
-			sendResponse(httpResponse, '', 'N', '参数错误');
-			return false;
+		try{
+			if( this.whereList === '{}' || this.updateList === '{}' ){
+				sendResponse(httpResponse, '', 'N', '参数错误');
+				return false;
+			}
+			var whereList = {}, whereListCache = this.whereList;
+			for(var i in whereListCache){
+				if( whereListCache[i] !== '' ) whereList[i] = whereListCache[i];
+			}
+			var con = new connection(dbOption, this.tableName);
+			con.where(whereList).update(this.updateList, function(res){
+				if( res === 'ERROR'){
+					sendResponse(httpResponse, '', "N", '更新失败，您要执行的操作可能存在错误');
+					return;
+				}
+				var responseData = {};
+				responseData.data = res.rows;
+				
+				con.release();
+				con = null;
+				sendResponse(httpResponse, responseData, "Y");
+			});
+		}catch(e){
+			log4js('error', e);
+			sendResponse(httpResponse, '', "N", '系统错误');
 		}
-		var whereList = {}, whereListCache = this.whereList;
-		for(var i in whereListCache){
-			if( whereListCache[i] !== '' ) whereList[i] = whereListCache[i];
-		}
-		var con = new connection(dbOption, this.tableName);
-		con.where(whereList).update(this.updateList, function(res){
-			var responseData = {};
-			responseData.data = res.rows;
-			
-			con.release();
-			con = null;
-			sendResponse(httpResponse, responseData, "Y");
-		});
 	}
 }
 
@@ -105,7 +138,6 @@ http.createServer(function(req, res){
 		}
 		var postDataString = JSON.stringify(postData);
 		if( pathName != '/' && postDataString && postDataString != '{}' ){
-			res.writeHeader(200, {'content-type':'text/html;charset=utf-8', "Access-Control-Allow-Origin":"*"});
 			log4js('info', 'pathName: ' + pathName);
 			log4js('info', JSON.stringify(postData));
 			queryFunctions[pathName] && queryFunctions[pathName].call(postData, res);

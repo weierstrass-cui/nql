@@ -40,6 +40,7 @@ var SqlClass = function(options, tableName){
 	this.update = function(opts, callBack){
 		if( !TBN || typeof TBN !== 'string' ){
 			log4js('error', 'NO TABLE');
+			return;
 		}else{
 			var SET = [], _this = this, where = getWhere();
 			for(var i in opts){
@@ -51,6 +52,9 @@ var SqlClass = function(options, tableName){
 			this.connection.query(nql, function(err, rows, fields){
 				if( err ){
 					log4js('error', err);
+					if( callBack ){
+						callBack('ERROR');
+					}
 					return;
 				}
 				if( rows && callBack ){
@@ -59,6 +63,9 @@ var SqlClass = function(options, tableName){
 					_this.connection.query(nql, function(findErr, findRows, findFields){
 						if( findErr ){
 							log4js('error', err);
+							if( callBack ){
+								callBack('ERROR');
+							}
 							return;
 						}
 						if( findRows ){
@@ -81,6 +88,9 @@ var SqlClass = function(options, tableName){
 			con.query(nql, function(err, rows, fields){
 				if( err ){
 					log4js('error', err);
+					if( callBack ){
+						callBack('ERROR');
+					}
 					return;
 				}
 				if( rows ){
@@ -92,6 +102,9 @@ var SqlClass = function(options, tableName){
 					con.query(nql, function(err, rows, fields){
 						if( err ){
 							log4js('error', err);
+							if( callBack ){
+								callBack('ERROR');
+							}
 							return;
 						}
 						if( rows && callBack ){
@@ -123,6 +136,9 @@ var SqlClass = function(options, tableName){
 		this.connection.query('show tables', function(err, rows, fields){
 			if( err ){
 				log4js('error', err);
+				if( callBack ){
+					callBack('ERROR');
+				}
 				return;
 			}
 			if( rows && callBack ){
@@ -139,6 +155,9 @@ var SqlClass = function(options, tableName){
 			this.connection.query('show fields from ' + TBN, function(err, rows, fields){
 				if( err ){
 					log4js('error', err);
+					if( callBack ){
+						callBack('ERROR');
+					}
 					return;
 				}
 				if( rows && callBack ){
